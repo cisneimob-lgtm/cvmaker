@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>CVForge — Gerador de Currículo</title>
+</head>
+<body class="bg-slate-50">
+  <div class="max-w-4xl mx-auto p-6">
+    <div class="bg-white rounded-2xl shadow p-6">
+      <div class="flex items-center justify-between gap-3">
+        <div>
+          <h1 class="text-2xl font-semibold">CVForge — Currículo Profissional</h1>
+          <p class="text-slate-600 mt-1">Preencha e gere PDF/DOCX em 1 clique.</p>
+        </div>
+        <a href="/landing" class="text-sm text-slate-600 underline">Ver landing</a>
+      </div>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="mt-4">
+            {% for cat, msg in messages %}
+              <div class="p-3 rounded-lg {% if cat=='error' %}bg-red-50 text-red-700{% else %}bg-green-50 text-green-700{% endif %}">
+                {{ msg }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <form class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4"
+            method="post" action="/preview"
+            enctype="multipart/form-data">
+
+        <div class="md:col-span-2">
+          <label class="text-sm text-slate-700">Template</label>
+          <select name="template" class="mt-1 w-full p-3 rounded-xl border">
+            <option value="ats" {% if demo is defined and demo.template=='ats' %}selected{% endif %}>ATS (sem foto, passa em RH)</option>
+            <option value="modern" {% if demo is defined and demo.template=='modern' %}selected{% endif %}>Modern (com foto)</option>
+            <option value="minimal" {% if demo is defined and demo.template=='minimal' %}selected{% endif %}>Minimal</option>
+          </select>
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="text-sm text-slate-700">Foto (opcional)</label>
+          <input type="file" name="photo" accept="image/png,image/jpeg"
+                 class="mt-1 w-full p-3 rounded-xl border bg-white" />
+          <p class="text-xs text-slate-500 mt-1">PNG/JPG. Recomendado: foto quadrada (600x600).</p>
+        </div>
+
+        <div>
+          <label class="text-sm text-slate-700">Nome *</label>
+          <input name="name" class="mt-1 w-full p-3 rounded-xl border"
+                 value="{{ demo.name if demo is defined else '' }}"/>
+        </div>
+        <div>
+          <label class="text-sm text-slate-700">Título / Cargo</label>
+          <input name="title" class="mt-1 w-full p-3 rounded-xl border"
+                 value="{{ demo.title if demo is defined else '' }}"/>
+        </div>
+
+        <div>
+          <label class="text-sm text-slate-700">Email</label>
+          <input name="email" class="mt-1 w-full p-3 rounded-xl border"
+                 value="{{ demo.email if demo is defined else '' }}"/>
+        </div>
+        <div>
+          <label class="text-sm text-slate-700">Telefone</label>
+          <input name="phone" class="mt-1 w-full p-3 rounded-xl border"
+                 value="{{ demo.phone if demo is defined else '' }}"/>
+        </div>
+
+        <div>
+          <label class="text-sm text-slate-700">Cidade</label>
+          <input name="city" class="mt-1 w-full p-3 rounded-xl border"
+                 value="{{ demo.city if demo is defined else '' }}"/>
+        </div>
+        <div>
+          <label class="text-sm text-slate-700">LinkedIn</label>
+          <input name="linkedin" class="mt-1 w-full p-3 rounded-xl border"
+                 value="{{ demo.linkedin if demo is defined else '' }}"/>
+        </div>
+
+        <div>
+          <label class="text-sm text-slate-700">GitHub</label>
+          <input name="github" class="mt-1 w-full p-3 rounded-xl border"
+                 value="{{ demo.github if demo is defined else '' }}"/>
+        </div>
+        <div>
+          <label class="text-sm text-slate-700">Portfólio (opcional)</label>
+          <input name="portfolio" class="mt-1 w-full p-3 rounded-xl border"
+                 value="{{ demo.portfolio if demo is defined else '' }}"/>
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="text-sm text-slate-700">Resumo Profissional</label>
+          <textarea name="summary" rows="3" class="mt-1 w-full p-3 rounded-xl border">{{ demo.summary if demo is defined else '' }}</textarea>
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="text-sm text-slate-700">Objetivo</label>
+          <textarea name="objective" rows="2" class="mt-1 w-full p-3 rounded-xl border">{{ demo.objective if demo is defined else '' }}</textarea>
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="text-sm text-slate-700">Habilidades (separe por vírgula)</label>
+          <input name="skills" class="mt-1 w-full p-3 rounded-xl border"
+                 value="{{ demo.skills if demo is defined else '' }}"/>
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="text-sm text-slate-700">Experiência (uma linha por item; bullets com "•")</label>
+          <textarea name="experience" rows="6" class="mt-1 w-full p-3 rounded-xl border">{{ demo.experience if demo is defined else '' }}</textarea>
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="text-sm text-slate-700">Formação (uma linha por item)</label>
+          <textarea name="education" rows="4" class="mt-1 w-full p-3 rounded-xl border">{{ demo.education if demo is defined else '' }}</textarea>
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="text-sm text-slate-700">Certificações (uma linha por item)</label>
+          <textarea name="certs" rows="3" class="mt-1 w-full p-3 rounded-xl border">{{ demo.certs if demo is defined else '' }}</textarea>
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="text-sm text-slate-700">Idiomas (uma linha por item)</label>
+          <textarea name="languages" rows="3" class="mt-1 w-full p-3 rounded-xl border">{{ demo.languages if demo is defined else '' }}</textarea>
+        </div>
+
+        <div class="md:col-span-2 flex flex-col gap-3">
+          <label class="flex items-center gap-2 text-sm text-slate-700">
+            <input type="checkbox" name="use_ai" class="h-4 w-4"/>
+            ✨ Melhorar resumo/objetivo (IA opcional)
+          </label>
+
+          <label class="flex items-center gap-2 text-sm text-slate-700">
+            <input type="checkbox" name="make_english" class="h-4 w-4"/>
+            🌎 Gerar versão em inglês (IA opcional)
+          </label>
+
+          <div class="flex items-center justify-end gap-3">
+            <button class="px-5 py-3 rounded-xl bg-slate-900 text-white font-medium">
+              Pré-visualizar + Score
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <p class="text-xs text-slate-500 mt-4">
+      MVP vendável: PDF + DOCX + templates + score ATS. IA é upgrade.
+    </p>
+  </div>
+</body>
+</html>

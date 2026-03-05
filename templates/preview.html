@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Prévia — CVForge</title>
+</head>
+<body class="bg-slate-50">
+  <div class="max-w-4xl mx-auto p-6">
+    <div class="bg-white rounded-2xl shadow p-6">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-semibold">{{ cv.name }}</h1>
+          <p class="text-slate-600">{{ cv.title }}</p>
+          <p class="text-sm text-slate-600 mt-2">
+            {{ cv.email }} • {{ cv.phone }} • {{ cv.city }}
+          </p>
+          <p class="text-sm text-slate-600">
+            {% if cv.linkedin %}{{ cv.linkedin }}{% endif %}
+            {% if cv.github %} | {{ cv.github }}{% endif %}
+            {% if cv.portfolio %} | {{ cv.portfolio }}{% endif %}
+          </p>
+
+          <p class="text-xs text-slate-500 mt-2">
+            Template: <b>{{ cv.template }}</b> • Idioma: <b>{{ cv.lang }}</b>
+            {% if cv.photo_path %} • Foto ✅{% else %} • Sem foto{% endif %}
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <a href="/download/pdf" class="px-4 py-3 rounded-xl bg-slate-900 text-white font-medium text-center">
+            Baixar PDF
+          </a>
+          <a href="/download/docx" class="px-4 py-3 rounded-xl bg-white border rounded-xl font-medium text-center">
+            Baixar DOCX
+          </a>
+          <a href="/" class="text-sm text-slate-600 underline text-center">Editar</a>
+        </div>
+      </div>
+
+      <hr class="my-6"/>
+
+      <div class="bg-slate-50 border rounded-xl p-4">
+        <div class="flex items-center justify-between">
+          <div class="font-semibold">Score ATS</div>
+          <div class="text-lg font-bold">{{ cv._score }}/100</div>
+        </div>
+        {% if cv._tips %}
+          <ul class="list-disc ml-6 text-sm text-slate-700 mt-2">
+            {% for tip in cv._tips %}
+              <li>{{ tip }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+
+      <div class="mt-6">
+        {% if cv.summary %}
+          <h2 class="font-semibold">Resumo</h2>
+          <p class="text-slate-700 mt-1">{{ cv.summary }}</p>
+        {% endif %}
+
+        {% if cv.objective %}
+          <h2 class="font-semibold mt-5">Objetivo</h2>
+          <p class="text-slate-700 mt-1">{{ cv.objective }}</p>
+        {% endif %}
+
+        {% if cv.skills %}
+          <h2 class="font-semibold mt-5">Habilidades</h2>
+          <p class="text-slate-700 mt-1">{{ ", ".join(cv.skills) }}</p>
+        {% endif %}
+
+        {% if cv.experience %}
+          <h2 class="font-semibold mt-5">Experiência</h2>
+          <div class="mt-1 space-y-1">
+            {% for line in cv.experience %}
+              {% if line.startswith("•") %}
+                <div class="ml-4 text-slate-700">• {{ line[1:].strip() }}</div>
+              {% else %}
+                <div class="font-medium text-slate-800 mt-2">{{ line }}</div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        {% if cv.education %}
+          <h2 class="font-semibold mt-5">Formação</h2>
+          <ul class="list-disc ml-6 text-slate-700 mt-1">
+            {% for line in cv.education %}
+              <li>{{ line }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+
+        {% if cv.certs %}
+          <h2 class="font-semibold mt-5">Certificações</h2>
+          <ul class="list-disc ml-6 text-slate-700 mt-1">
+            {% for line in cv.certs %}
+              <li>{{ line }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+
+        {% if cv.languages %}
+          <h2 class="font-semibold mt-5">Idiomas</h2>
+          <ul class="list-disc ml-6 text-slate-700 mt-1">
+            {% for line in cv.languages %}
+              <li>{{ line }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</body>
+</html>
